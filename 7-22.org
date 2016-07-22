@@ -1,15 +1,23 @@
 * this week
 ** CNN模型，算法细节的学习，参数如何设置
-*** 如何初始化
-*** 如何设置CNN模型的层次结构 ((Conv -> Relu) ^n -> Pool) ^m -> FC -> Relu -> FC
-*** 设置设置Conv层的filter，（一般为  3*3）
-*** Pool层设为（2*2）
+- 如何初始化
+- 如何设置CNN模型的层次结构 ((Conv -> Relu) ^n -> Pool) ^m -> FC -> Relu -> FC
+- 设置设置Conv层的filter，（一般为  3*3）
+- Pool层设为（2*2）
+- 最近几年的主要模型：
+| MODEL     | YEAR        | TOP 5 ERROR RATE |
+|-----------+-------------+------------------|
+| AlexNet   | ILSVRC 2012 |              16% |
+| ZF Net    | ILSVRC 2013 |                  |
+| GoogLeNet | ILSVRC 2014 |                  |
+| VGGNet    | ILSVRC 2014 |                  |
+| ResNet    | ILSVRC 2015 |                  |
 
 ** 装系统(1070)
-*** 先disable pci（显卡）
-*** 进入系统安装bumblebee, bumblebee-nvidia后再enable pci（显卡）
-*** 这样可以解决带显卡进入系统
+- 先disable pci（显卡）
+- 进入系统安装bumblebee, bumblebee-nvidia后再enable pci（显卡）
+- 这样可以解决带显卡进入系统
 
 * next week
-** CNN模型的应用
-** 调通开发环境
+- CNN模型的应用
+- 调通开发环境
