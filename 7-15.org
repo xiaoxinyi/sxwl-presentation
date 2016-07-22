@@ -7,4 +7,4 @@
 * next week
 - *CNN算法实现，应用于图片*
 - *算法面试*
-- 摸索 *tensorflow* 框架
+- 摸索 *tensorflow* 框
