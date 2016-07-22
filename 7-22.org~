@@ -1,0 +1,4 @@
+* this week
+** CNN模型，算法细节的学习，参数如何设置
+*** 如何初始化
+*** ((conv -> Relu) ^n -> Pool) ^m -> fc
