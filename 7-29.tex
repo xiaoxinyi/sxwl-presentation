@@ -1,0 +1,122 @@
+% Created 2016-07-29 Fri 15:46
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{minted}
+\author{章立}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={章立},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 24.5.1 (Org mode 8.3.4)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{This week}
+\label{sec:orgheadline7}
+\subsection{学习docker}
+\label{sec:orgheadline1}
+\begin{itemize}
+\item \href{http://192.168.199.107:10080/w/docker_usage_and_study/}{骆裕龙文档}
+\item \href{http://docs.daocloud.io/faq/docker101}{DaoCloud文档}
+\item \href{https://docs.docker.com/}{docker官方文档}
+\item \href{https://www.youtube.com/playlist?list=PLkA60AVN3hh_6cAz8TUGtkYbJSL2bdZ4h}{youtube视频教程}
+\item \href{https://www.youtube.com/user/dockerrun}{dockercon}
+\end{itemize}
+\subsection{学习tmux}
+\label{sec:orgheadline2}
+\begin{itemize}
+\item 适合长时间ssh操作
+\item 可以保存和重建所有的会话状态
+\item 网络坏境不稳定时，不会中断当前的操作
+\item \href{https://www.youtube.com/playlist?list=PLtK75qxsQaMJ_DmXk9yZbCBJuG9HRwlGc}{tmux视频教程}
+\end{itemize}
+\subsection{搭建deep learning框架}
+\label{sec:orgheadline3}
+\begin{itemize}
+\item All-in-one Docker image for Deep Learning
+\begin{itemize}
+\item Ubuntu 14.04
+\item CUDA 7.5 (GPU version only)
+\item cuDNN v4 (GPU version only)
+\item Tensorflow
+\item Caffe
+\item Theano
+\item Keras
+\item Lasagne
+\item Torch (includes nn, cutorch, cunn and cuDNN bindings)
+\item iPython/Jupyter Notebook (including iTorch kernel)
+\item Numpy, SciPy, Pandas, Scikit Learn, Matplotlib
+\item A few common libraries used for deep learning
+\end{itemize}
+\end{itemize}
+\subsection{安装dl-docker}
+\label{sec:orgheadline4}
+\begin{enumerate}
+\item 安装docker
+\item 安装nvidia驱动
+\item 安装nvidia-docker
+\item 安装dl-docker
+\end{enumerate}
+\begin{minted}[]{bash}
+# Find your graphics card model
+lspci | grep -i nvidia
+
+# Don't install two different drivers
+sudo apt-get purge bumblebee
+
+# We will install the drivers using apt-get.
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt-get update
+sudo apt-cache search nvidia
+sudo apt-get install nvidia-367
+
+# Don't need to install CUDA
+
+
+# Install nvidia-docker and nvidia-docker-plugin
+wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.0-rc.3/nvidia-docker_1.0.0.rc.3-1_amd64.deb
+sudo dpkg -i /tmp/nvidia-docker*.deb && rm /tmp/nvidia-docker*.deb
+
+# Test nvidia-smi
+nvidia-docker run --rm nvidia/cuda nvidia-smi
+
+# Install dl-docker
+docker pull floydhub/dl-docker:cpu
+
+# CPU Version
+docker build -t floydhub/dl-docker:cpu -f Dockerfile.cpu .
+
+# GPU Version
+docker build -t floydhub/dl-docker:gpu -f Dockerfile.gpu .
+\end{minted}
+\subsection{使用和调试deep learning框架caffe}
+\label{sec:orgheadline5}
+\begin{itemize}
+\item 学习中
+\end{itemize}
+\subsection{筛选简历}
+\label{sec:orgheadline6}
+
+\section{Next week}
+\label{sec:orgheadline9}
+\subsection{学习使用caffe}
+\label{sec:orgheadline8}
+\end{document}

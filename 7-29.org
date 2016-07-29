@@ -1,0 +1,69 @@
+* This week
+** 学习docker
+- [[http://192.168.199.107:10080/w/docker_usage_and_study/][骆裕龙文档]]
+- [[http://docs.daocloud.io/faq/docker101][DaoCloud文档]]
+- [[https://docs.docker.com/][docker官方文档]]
+- [[https://www.youtube.com/playlist?list=PLkA60AVN3hh_6cAz8TUGtkYbJSL2bdZ4h][youtube视频教程]]
+- [[https://www.youtube.com/user/dockerrun][dockercon]]
+** 学习tmux
+- 适合长时间ssh操作
+- 可以保存和重建所有的会话状态
+- 网络坏境不稳定时，不会中断当前的操作
+- [[https://www.youtube.com/playlist?list=PLtK75qxsQaMJ_DmXk9yZbCBJuG9HRwlGc][tmux视频教程]]
+** 搭建deep learning框架
+- All-in-one Docker image for Deep Learning
+  + Ubuntu 14.04
+  + CUDA 7.5 (GPU version only)
+  + cuDNN v4 (GPU version only)
+  + Tensorflow
+  + Caffe
+  + Theano
+  + Keras
+  + Lasagne
+  + Torch (includes nn, cutorch, cunn and cuDNN bindings)
+  + iPython/Jupyter Notebook (including iTorch kernel)
+  + Numpy, SciPy, Pandas, Scikit Learn, Matplotlib
+  + A few common libraries used for deep learning
+** 安装dl-docker
+1. 安装docker
+2. 安装nvidia驱动
+3. 安装nvidia-docker
+4. 安装dl-docker
+#+BEGIN_SRC bash
+  # Find your graphics card model
+  lspci | grep -i nvidia
+
+  # Don't install two different drivers
+  sudo apt-get purge bumblebee
+
+  # We will install the drivers using apt-get.
+  sudo add-apt-repository ppa:graphics-drivers/ppa
+  sudo apt-get update
+  sudo apt-cache search nvidia
+  sudo apt-get install nvidia-367
+
+  # Don't need to install CUDA
+
+
+  # Install nvidia-docker and nvidia-docker-plugin
+  wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.0-rc.3/nvidia-docker_1.0.0.rc.3-1_amd64.deb
+  sudo dpkg -i /tmp/nvidia-docker*.deb && rm /tmp/nvidia-docker*.deb
+
+  # Test nvidia-smi
+  nvidia-docker run --rm nvidia/cuda nvidia-smi
+
+  # Install dl-docker
+  docker pull floydhub/dl-docker:cpu
+
+  # CPU Version
+  docker build -t floydhub/dl-docker:cpu -f Dockerfile.cpu .
+
+  # GPU Version
+  docker build -t floydhub/dl-docker:gpu -f Dockerfile.gpu .
+#+END_SRC
+** 使用和调试deep learning框架caffe
+- 学习中
+** 筛选简历
+
+* Next week
+** 学习使用caffe
