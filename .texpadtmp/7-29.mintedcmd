@@ -1,0 +1,1 @@
+pygmentize -l bash -f latex -F tokenmerge -P style=default -P commandprefix=PYGdefault -o "7-29.out.pyg" "7-29.pyg" 

@@ -1,0 +1,14 @@
+* This week
+** 调试Caffe的Nvidia GTX 1070环境
+注意要点：
+- viidia driver 367
+- 安装nvidia/cuda:8.0-cudnn5-devel
+- Caffe =cmake= flags: 
+ #+BEGIN_SRC bash
+cmake -DCUDA_ARCH_NAME=Manual -DCUDA_ARCH_BIN="61" -DCUDA_ARCH_PTX="61" -DUSE_CUDNN=1 
+ #+END_SRC
+- =nvidia-docker run= 替换 =docker run=
+** Caffe Digit train 准确率：98.9%
+** 学习procotol buffer, 写了一个[[https://github.com/xiaoxinyi/zl-tutorial/blob/master/protocol-buffer.org][protocol buffer简明教程]]
+* Next week
+** 折腾Caffe框架

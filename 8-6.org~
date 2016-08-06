@@ -1,0 +1,6 @@
+* This week
+** 调试Caffe的Nvidia GTX 1070环境
+注意要点：
+- viidia driver 367
+- =nvidia-docker run= 替换 =docker run=
+- Caffe =cmake= flags: =

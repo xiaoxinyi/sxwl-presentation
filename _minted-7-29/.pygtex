@@ -1,0 +1,32 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{c+c1}{\PYGdefaultZsh{} Find your graphics card model}
+lspci \PYGdefault{p}{|} grep \PYGdefaultZhy{}i nvidia
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} Don\PYGdefaultZsq{}t install two different drivers}
+sudo apt\PYGdefaultZhy{}get purge bumblebee
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} We will install the drivers using apt\PYGdefaultZhy{}get.}
+sudo add\PYGdefaultZhy{}apt\PYGdefaultZhy{}repository ppa:graphics\PYGdefaultZhy{}drivers/ppa
+sudo apt\PYGdefaultZhy{}get update
+sudo apt\PYGdefaultZhy{}cache search nvidia
+sudo apt\PYGdefaultZhy{}get install nvidia\PYGdefaultZhy{}367
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} Don\PYGdefaultZsq{}t need to install CUDA}
+
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} Install nvidia\PYGdefaultZhy{}docker and nvidia\PYGdefaultZhy{}docker\PYGdefaultZhy{}plugin}
+wget \PYGdefaultZhy{}P /tmp https://github.com/NVIDIA/nvidia\PYGdefaultZhy{}docker/releases/download/v1.0.0\PYGdefaultZhy{}rc.3/nvidia\PYGdefaultZhy{}docker\PYGdefaultZus{}1.0.0.rc.3\PYGdefaultZhy{}1\PYGdefaultZus{}amd64.deb
+sudo dpkg \PYGdefaultZhy{}i /tmp/nvidia\PYGdefaultZhy{}docker*.deb \PYGdefault{o}{\PYGdefaultZam{}\PYGdefaultZam{}} rm /tmp/nvidia\PYGdefaultZhy{}docker*.deb
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} Test nvidia\PYGdefaultZhy{}smi}
+nvidia\PYGdefaultZhy{}docker run \PYGdefaultZhy{}\PYGdefaultZhy{}rm nvidia/cuda nvidia\PYGdefaultZhy{}smi
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} Install dl\PYGdefaultZhy{}docker}
+docker pull floydhub/dl\PYGdefaultZhy{}docker:cpu
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} CPU Version}
+docker build \PYGdefaultZhy{}t floydhub/dl\PYGdefaultZhy{}docker:cpu \PYGdefaultZhy{}f Dockerfile.cpu .
+
+\PYGdefault{c+c1}{\PYGdefaultZsh{} GPU Version}
+docker build \PYGdefaultZhy{}t floydhub/dl\PYGdefaultZhy{}docker:gpu \PYGdefaultZhy{}f Dockerfile.gpu .
+\end{Verbatim}
