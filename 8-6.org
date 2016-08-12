@@ -1,7 +1,7 @@
 * This week
 ** 调试Caffe的Nvidia GTX 1070环境
 注意要点：
-- viidia driver 367
+- nvidia driver 367
 - 安装nvidia/cuda:8.0-cudnn5-devel
 - Caffe =cmake= flags: 
  #+BEGIN_SRC bash
