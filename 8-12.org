@@ -11,6 +11,15 @@ kernel/filter matrix 有滤镜作用
 99 imagenet filters
 [[./imagenet.png]]
 
+
+Notice that if all neurons in a single depth slice are using the same
+weight vector, then the forward pass of the CONV layer can in each
+depth slice be computed as a convolution of the neuron’s weights with
+the input volume (Hence the name: Convolutional Layer). This is why it
+is common to refer to the sets of weights as a filter (or a kernel),
+that is convolved with the input.
+
+
 If detecting a horizontal edge is important at some location in the
 image, it should intuitively be useful at some other location as well
 due to the translationally-invariant structure of images. 

@@ -207,7 +207,7 @@ $(function() {
 <p>
 kernel/filter matrix 有滤镜作用
 <img src="./convolution.png" class="img-responsive" alt="convolution.png">
-99 <code>imagenet filters</code>
+99 imagenet filters
 <img src="./imagenet.png" class="img-responsive" alt="imagenet.png">
 </p>
 
