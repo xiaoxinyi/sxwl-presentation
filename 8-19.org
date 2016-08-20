@@ -5,9 +5,9 @@
      cat words.txt | cut -f1 | xargs -n1 -I {} ./downloadutils.py --downloadOriginalImages --wind {}
    #+END_SRC
 - [[http://man.linuxde.net/xargs][ =xargs= command]] 
--  [[http://blog.csdn.net/abcjennifer/article/details/7639681][sift feature]]
+- [[http://blog.csdn.net/abcjennifer/article/details/7639681][sift feature]]
 - [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][org tutorial]]
-
+- [[https://docs.google.com/presentation/d/1AuiPxUy7-Dgb36Q_SN8ToRrq6Nk0X-sOFmr7UnbAAHI/edit][caffe tutorial]]
 * Next Week
 - train imagenet
 - feature extraction
