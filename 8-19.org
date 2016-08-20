@@ -1,0 +1,16 @@
+* This Week
+** [[https://pyformat.info/][python =string.format= tutorial]]
+** download imagenet 
+   #+BEGIN_SRC sh
+     cat words.txt | cut -f1 | xargs -n1 -I {} ./downloadutils.py --downloadOriginalImages --wind {}
+   #+END_SRC
+** [[http://man.linuxde.net/xargs][ =xargs= command]] 
+** TODO [[http://blog.csdn.net/abcjennifer/article/details/7639681][sift feature]]
+   SCHEDULED: <2016-08-19 Fri>
+** DONE [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][org tutorial]]
+   CLOSED: [2016-08-19 Fri 21:32] SCHEDULED: <2016-08-19 Fri>
+* Next Week
+** TODO train imagenet
+   SCHEDULED: <2016-08-20 Sat>
+** TODO feature extraction
+   SCHEDULED: <2016-08-20 Sat>

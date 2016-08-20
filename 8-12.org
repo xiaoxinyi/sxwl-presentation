@@ -20,6 +20,11 @@ is common to refer to the sets of weights as a filter (or a kernel),
 that is convolved with the input.
 
 
+It turns out that we can dramatically reduce the number of parameters
+by making one reasonable assumption: That if one feature is useful to
+compute at some spatial position (x,y), then it should also be useful
+to compute at a different position (x2,y2). 
+
 If detecting a horizontal edge is important at some location in the
 image, it should intuitively be useful at some other location as well
 due to the translationally-invariant structure of images. 
