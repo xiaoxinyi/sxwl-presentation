@@ -175,9 +175,9 @@ Out[3]: 2
   * shared memory per block in bytes
 *** Convert color to black and white
     #+BEGIN_SRC latex
-     I = (R + G + B) / 3 
+      I = (R + G + B) / 3
+      I = .299f * R + .587f * G + .114f * B
     #+END_SRC
-\(I = .299f * R + .587f * G + .114f * B\)
 *** [[http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#cuda-programming-model][ =nvcc= introduction]]
 *** cs344 Note
 - GPU is responsible for allocating blocks to SM(streaming multiprocessors)
@@ -215,7 +215,9 @@ reached the barrier, they can proceed.
 [[./images/synchronized.png]]
 *** High-level strategies
   * Maximize arithmetic intensity
-\(\frac{Math}{Memory}\)
+#+BEGIN_SRC latex
+  \frac{Math}{Memory}
+#+END_SRC
     - maximize compute ops per thread
     - minimize time spent on memory per thread
        + move frequently-accessed data to fast memory
