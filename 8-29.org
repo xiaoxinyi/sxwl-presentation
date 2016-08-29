@@ -174,7 +174,9 @@ Out[3]: 2
   * block of threads : tx * ty * tz
   * shared memory per block in bytes
 *** Convert color to black and white
-    $$ I = (R + G + B) / 3 $$
+    #+BEGIN_SRC latex
+     I = (R + G + B) / 3 
+    #+END_SRC
 \(I = .299f * R + .587f * G + .114f * B\)
 *** [[http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#cuda-programming-model][ =nvcc= introduction]]
 *** cs344 Note
