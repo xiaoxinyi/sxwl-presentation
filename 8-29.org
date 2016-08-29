@@ -174,7 +174,7 @@ Out[3]: 2
   * block of threads : tx * ty * tz
   * shared memory per block in bytes
 *** Convert color to black and white
-    #+BEGIN_SRC latex
+    #+BEGIN_SRC example
       I = (R + G + B) / 3
       I = .299f * R + .587f * G + .114f * B
     #+END_SRC
