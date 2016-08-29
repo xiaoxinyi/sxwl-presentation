@@ -1,0 +1,3 @@
+float *device_data=NULL;
+size_t size = 1024*sizeof(float);
+cudaMalloc((void**)&device_data, size);

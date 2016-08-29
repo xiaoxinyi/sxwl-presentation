@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title></title>
+<!-- 2016-08-29 Mon 15:33 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Org-mode">
+<meta name="author" content="章立">
+
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style type="text/css">
+/* org mode styles on top of twbs */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-size: 18px;
+    margin-bottom: 105px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 101px;
+    background-color: #f5f5f5;
+}
+
+footer > div {
+    padding: 10px;
+}
+
+footer p {
+    margin: 0 0 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#table-of-contents {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+blockquote p {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+.footpara {
+    display: inline-block;
+}
+
+figcaption {
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding-bottom: 15px;
+}
+
+/* from twbs docs */
+
+.bs-docs-sidebar.affix {
+    position: static;
+}
+@media (min-width: 768px) {
+    .bs-docs-sidebar {
+        padding-left: 20px;
+    }
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+    display: block;
+    padding: 4px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+    padding-left: 19px;
+    color: #A1283B;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #A1283B;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+    padding-left: 18px;
+    font-weight: bold;
+    color: #A1283B;
+    background-color: transparent;
+    border-left: 2px solid #A1283B;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+    padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+    padding-left: 28px;
+    font-weight: 500;
+}
+
+/* Nav: third level (shown on .active) */
+.bs-docs-sidebar .nav .nav .nav {
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 40px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav .nav > li > a:focus {
+    padding-left: 39px;
+}
+.bs-docs-sidebar .nav .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav .nav > .active:focus > a {
+    padding-left: 38px;
+    font-weight: 500;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-docs-sidebar.affix,
+    .bs-docs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-docs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 20px;
+    }
+    .bs-docs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-docs-sidebar.affix-bottom,
+    .bs-docs-sidebar.affix {
+        width: 263px;
+    }
+}
+</style>
+<script type="text/javascript">
+$(function() {
+    'use strict';
+
+    $('.bs-docs-sidebar li').first().addClass('active');
+
+    $(document.body).scrollspy({target: '.bs-docs-sidebar'});
+
+    $('.bs-docs-sidebar').affix();
+});
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  displayAlign: "center",
+  displayIndent: "2em",
+  messageStyle: "none",
+  "HTML-CSS": {
+    scale: 100,
+    styles: {
+      ".MathJax_Display": {
+        "font-size": "100%"
+      }
+    }
+  },
+  "SVG": {
+    scale: 100,
+    styles: {
+      ".MathJax_SVG_Display": {
+        "font-size": "100%",
+        "margin-left": "-2.281em"
+      }
+    }
+  }
+});
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"></script>
+</head>
+<body>
+<div id="content" class="container">
+<div class="row"><div class="col-md-9"><h1 class="title"></h1>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> This Week</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<b>*</b> Caffe Note
+</p>
+</div>
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> <a href="https://github.com/BVLC/caffe/tree/85bb397acfd383a676c125c75d877642d6b39ff6/examples/feature_extraction">extract feature</a></h3>
+<div class="outline-text-3" id="text-1-1">
+</div><div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> using caffe to extract features</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<div class="org-src-container">
+
+<pre class="src src-sh">find <span style="color: #6c71c4; font-weight: bold;">`pwd`</span>/examples/images -type f -exec echo {} <span style="color: #2aa198;">\;</span> &gt; examples/_temp/temp.txt
+sed <span style="color: #2aa198;">"s/$/ 0/"</span> examples/_temp/temp.txt &gt; examples/_temp/file_list.txt
+<span style="color: #839496;">cd</span> $<span style="color: #268bd2;">CAFFE</span>
+./build/tools/extract_features models/bvlc_reference_caffenet/bvlc_reference examples/_temp/imagenet_val.prototxt example/_temp/feature fc7 10 lmdb GPU 0
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> general command for extract feature using caffe</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<div class="org-src-container">
+
+<pre class="src src-sh">extract_features pretrained_net_param  feature_extraction_proto_file <span style="color: #b58900; font-weight: bold;">\</span>
+extract_feature_blob_name1[,name2,...]  save_feature_dataset_name1[,name2,...] <span style="color: #b58900; font-weight: bold;">\</span>
+num_mini_batches  db_type  [CPU/GPU] [<span style="color: #268bd2;">DEVICE_ID</span>=0]
+</pre>
+</div>
+<ul class="org-ul">
+<li>参数1是模型参数（.caffemodel）文件的路径。
+</li>
+
+<li>参数2是描述网络结构的prototxt文件。程序会从参数1的caffemodel文件里找对应名称的layer读取参数。
+</li>
+
+<li>参数3是需要提取的blob名称，对应网络结构prototxt里的名称。blob名称可以
+</li>
+</ul>
+<p>
+有多个，用逗号分隔。每个blob提取出的特征会分开保存。
+</p>
+
+<ul class="org-ul">
+<li>参数4是保存提取出来的特征的数据库路径，可以有多个，和参数3中一一对应，
+</li>
+</ul>
+<p>
+以逗号分隔。如果用LMDB的话，路径必须是不存在的（已经存在的话要改名或者
+删除）。 
+</p>
+
+<ul class="org-ul">
+<li>参数5是提取特征所需要执行的batch数量。这个数值和prototxt里DataLayer中
+</li>
+</ul>
+<p>
+的Caffe的DataLayer(或者ImageDataLayer)中的batch<sub>size参数相乘</sub>，就是会被
+输入网络的总样本数。设置参数时需要确保batch<sub>size</sub> * num<sub>mini</sub><sub>batches等</sub>
+于需要提取特征的样本总数，否则提取的特征就会不够数或者是多了。 
+</p>
+
+<ul class="org-ul">
+<li>参数6是保存特征使用的数据库类型，支持lmdb和leveldb两种(小写)。推荐使用
+</li>
+</ul>
+<p>
+lmdb，因为lmdb的访问速度更快，还支持多进程同时读取。 
+</p>
+
+<ul class="org-ul">
+<li>参数7决定使用GPU还是CPU，直接写对应的三个大写字母就行。省略不写的话默
+</li>
+</ul>
+<p>
+认是CPU。 
+</p>
+
+<ul class="org-ul">
+<li>参数8决定使用哪个GPU，在多GPU的机器上跑的时候需要指定。省略不写的话默
+</li>
+</ul>
+<p>
+认使用0号GPU。 
+</p>
+
+<p>
+注意事项
+</p>
+<ul class="org-ul">
+<li>提取特征时，网络运行在Test模式下
+<ul class="org-ul">
+<li>Dropout层在Test模式下不起作用，不必担心dropout影响结果
+</li>
+<li>Train和Test的参数写在同一个Prototxt里的时候，改参数的时候注意不
+要改错地方(比如有两个DataLayer的情况下) 
+</li>
+</ul>
+</li>
+<li>减去均值图像
+<ul class="org-ul">
+<li>提取特征时，输入的图像要减去均值
+</li>
+<li>应该减去训练数据集的均值
+</li>
+</ul>
+</li>
+<li>提取哪一层
+<ul class="org-ul">
+<li>不要提取Softmax网络的最后一层(如AlexNet的fc8)，因为最后一层已经
+是分类任务的输出，作为特征的可推广性不够好
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> read from lmdb</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #859900;">import</span> numpy <span style="color: #859900;">as</span> np
+<span style="color: #859900;">import</span> caffe
+<span style="color: #859900;">import</span> lmdb
+<span style="color: #859900;">from</span> caffe.proto <span style="color: #859900;">import</span> caffe_pb2
+
+<span style="color: #268bd2;">fea_lmdb</span> = lmdb.<span style="color: #839496;">open</span>(<span style="color: #2aa198;">'featureA'</span>)
+<span style="color: #268bd2;">lmdb_txn</span> = fea_lmdb.begin()
+<span style="color: #268bd2;">lmdb_cursor</span> = txn.cursor()
+<span style="color: #268bd2;">features</span> = []
+
+<span style="color: #859900;">for</span> key, value <span style="color: #859900;">in</span> lmdb_cursor:
+    <span style="color: #268bd2;">datum</span> = caffe_pb2.Datum()
+    datum.ParseFromString(value)
+    <span style="color: #268bd2;">data</span> = caffe.io.datum_to_array(datum)
+    features.append(data)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-1-1-4" class="outline-4">
+<h4 id="sec-1-1-4"><span class="section-number-4">1.1.4</span> image recognition using <code>cos</code> similarity measure</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #859900;">import</span> numpy <span style="color: #859900;">as</span> np
+<span style="color: #859900;">import</span> caffe
+<span style="color: #859900;">import</span> lmdb
+<span style="color: #859900;">from</span> caffe.proto <span style="color: #859900;">import</span> caffe_pb2
+<span style="color: #859900;">from</span> scipy <span style="color: #859900;">import</span> spatial
+
+
+<span style="color: #586e75;"># </span><span style="color: #586e75;">3 steps to read form lmdb</span>
+<span style="color: #268bd2;">fea_lmdb</span> = lmdb.<span style="color: #839496;">open</span>(<span style="color: #2aa198;">'/root/caffe/examples/_temp/featureA'</span>)
+<span style="color: #268bd2;">lmdb_txn</span> = fea_lmdb.begin()
+<span style="color: #268bd2;">lmdb_cursor</span> = lmdb_txn.cursor()
+<span style="color: #268bd2;">features</span> = []
+
+<span style="color: #859900;">for</span> key, value <span style="color: #859900;">in</span> lmdb_cursor:
+    <span style="color: #268bd2;">datum</span> = caffe_pb2.Datum()
+    <span style="color: #586e75;"># </span><span style="color: #586e75;">Parse from serialized data</span>
+    datum.ParseFromString(value)
+    <span style="color: #268bd2;">data</span> = caffe.io.datum_to_array(datum)
+    features.append(data)
+
+<span style="color: #268bd2;">out</span> = []
+<span style="color: #859900;">for</span> f <span style="color: #859900;">in</span> features:
+    out.append(f.flatten())
+
+<span style="color: #268bd2;">n</span> = <span style="color: #839496;">len</span>(out)
+<span style="color: #268bd2;">similarity</span> = np.zeros((n, n), dtype=np.double)
+
+<span style="color: #859900;">for</span> i <span style="color: #859900;">in</span> <span style="color: #839496;">xrange</span>(n):
+    <span style="color: #859900;">for</span> j <span style="color: #859900;">in</span> <span style="color: #839496;">xrange</span>(n):
+      <span style="color: #586e75;"># </span><span style="color: #586e75;">cosin distance</span>
+        <span style="color: #268bd2;">similarity</span>[i, j] = 1 - spatial.distance.cosine(out[i], out[j])
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-1-1-5" class="outline-4">
+<h4 id="sec-1-1-5"><span class="section-number-4">1.1.5</span> <code>cos</code> similarity result</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<ul class="org-ul">
+<li>accuracy (true ture) : 53 / 55
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #268bd2;">a</span> = similarity[0:10, 0:10]
+  array([[ 1.        ,  0.63231419,  0.84345085,  0.73587363,  0.58211244,
+           0.67306891,  0.46881317,  0.56938226,  0.65432654,  0.55240935],
+         [ 0.63231419,  1.        ,  0.68508232,  0.56741804,  0.74116358,
+           0.81706845,  0.71951714,  0.75391089,  0.78529276,  0.74174079],
+         [ 0.84345085,  0.68508232,  1.        ,  0.78416825,  0.61635946,
+           0.72695667,  0.54473343,  0.60050371,  0.70046374,  0.58715887],
+         [ 0.73587363,  0.56741804,  0.78416825,  1.        ,  0.50801387,
+           0.60814318,  0.5046651 ,  0.52948304,  0.68054069,  0.49502061],
+         [ 0.58211244,  0.74116358,  0.61635946,  0.50801387,  1.        ,
+           0.88589477,  0.56183335,  0.72687896,  0.60917844,  0.87135289],
+         [ 0.67306891,  0.81706845,  0.72695667,  0.60814318,  0.88589477,
+           1.        ,  0.63597132,  0.76000156,  0.7042399 ,  0.87401555],
+         [ 0.46881317,  0.71951714,  0.54473343,  0.5046651 ,  0.56183335,
+           0.63597132,  1.        ,  0.58212342,  0.64319046,  0.6254508 ],
+         [ 0.56938226,  0.75391089,  0.60050371,  0.52948304,  0.72687896,
+           0.76000156,  0.58212342,  1.        ,  0.74652927,  0.72233884],
+         [ 0.65432654,  0.78529276,  0.70046374,  0.68054069,  0.60917844,
+           0.7042399 ,  0.64319046,  0.74652927,  1.        ,  0.61672591],
+         [ 0.55240935,  0.74174079,  0.58715887,  0.49502061,  0.87135289,
+           0.87401555,  0.6254508 ,  0.72233884,  0.61672591,  1.        ]])
+
+np.<span style="color: #839496;">sum</span>(a &gt; 0.5)
+96
+</pre>
+</div>
+<ul class="org-ul">
+<li>false true : 2 / 100
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-python">In [1]: <span style="color: #268bd2;">ab</span> = similarity[0:10, 10:]
+
+In [2]: ab
+Out[2]:
+array([[ 0.2842583 ,  0.37596221,  0.27628312,  0.12041221,  0.29636999,
+         0.13618284,  0.1381707 ,  0.17832465,  0.21937008,  0.40752771],
+       [ 0.32961919,  0.49064045,  0.29595205,  0.093565  ,  0.39657901,
+         0.17370467,  0.15514055,  0.2672414 ,  0.31652746,  0.46922921],
+       [ 0.31926577,  0.45413662,  0.26234978,  0.1560283 ,  0.30816957,
+         0.15273065,  0.16850629,  0.22604249,  0.25764858,  0.44164225],
+       [ 0.26623039,  0.3611369 ,  0.20121232,  0.11351721,  0.21726182,
+         0.11916629,  0.1431136 ,  0.20710409,  0.22387793,  0.31652456],
+       [ 0.30927462,  0.35910132,  0.2650208 ,  0.08663475,  0.37263798,
+         0.10722143,  0.09815253,  0.17950735,  0.20988739,  0.50689106],
+       [ 0.32089366,  0.40492257,  0.28595893,  0.09466663,  0.37709065,
+         0.10737807,  0.10595637,  0.19340299,  0.23139416,  0.51704389],
+       [ 0.29795872,  0.3890121 ,  0.26349005,  0.08589599,  0.36945176,
+         0.16923292,  0.11844475,  0.24970864,  0.31689723,  0.36337912],
+       [ 0.28911623,  0.33516171,  0.30897566,  0.12046317,  0.36436887,
+         0.10022814,  0.14957088,  0.29092572,  0.3343103 ,  0.47673998],
+       [ 0.31926479,  0.43550698,  0.31588098,  0.09185497,  0.33737191,
+         0.15741605,  0.16819127,  0.34134218,  0.38785466,  0.41883917],
+       [ 0.29190126,  0.3130953 ,  0.25801771,  0.07097081,  0.34608239,
+         0.09577894,  0.0842366 ,  0.14185045,  0.19112799,  0.47368384]])
+
+In [3]: np.<span style="color: #839496;">sum</span>(ab &gt; 0.5)
+Out[3]: 2
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Cuda Note</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> Configuring the kernel launch</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+<code>kernel&lt;&lt;&lt;grid of block, block of threads&gt;&gt;&gt;(...)</code>
+</p>
+
+<p>
+<code>square&lt;&lt;&lt;dim3(bx,by,bz), dime(tx,ty,tz), sharem&gt;&gt;&gt;(...)</code>
+</p>
+
+<ul class="org-ul">
+<li>grid of blocks : bx * by * bz
+</li>
+<li>block of threads : tx * ty * tz
+</li>
+<li>shared memory per block in bytes
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> Convert color to black and white</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+I = (R + G + B) / 3
+I = .299f * R + .587f * G + .114f * B
+</p>
+</div>
+</div>
+<div id="outline-container-sec-1-2-3" class="outline-4">
+<h4 id="sec-1-2-3"><span class="section-number-4">1.2.3</span> <a href="http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#cuda-programming-model"> <code>nvcc</code> introduction</a></h4>
+</div>
+<div id="outline-container-sec-1-2-4" class="outline-4">
+<h4 id="sec-1-2-4"><span class="section-number-4">1.2.4</span> cs344 Note</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<ul class="org-ul">
+<li>GPU is responsible for allocating blocks to SM(streaming multiprocessors)
+</li>
+<li>A block cannot run on more than one SM
+</li>
+<li>An SM may run more than one block
+</li>
+<li>All the SMs are running in parallel
+</li>
+<li>Threads in different block shouldn&rsquo;t cooperate
+</li>
+<li>Cuda make few guarantees about when and where thread blocks will run
+</li>
+<li>consequences
+<ul class="org-ul">
+<li>no assumptions blocks -&gt; SM
+</li>
+<li>no communication between blocks
+</li>
+</ul>
+</li>
+<li>CUDA guarantees that:
+<ul class="org-ul">
+<li>all threads in a block run on the same SM at the same time
+</li>
+<li>all blocks in a kernel finish before any blocks from next run
+</li>
+</ul>
+</li>
+<li>threadIdx : thread within block threadIdx.x threadIdx.y
+<ul class="org-ul">
+<li>blockDim : size of block
+</li>
+<li>blockIdx : block within grid
+</li>
+<li>gridDim : size of grid
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1-2-5" class="outline-4">
+<h4 id="sec-1-2-5"><span class="section-number-4">1.2.5</span> GPU memory model</h4>
+<div class="outline-text-4" id="text-1-2-5">
+
+<figure>
+<p><img src="./images/gpu-memory-model.png" class="img-responsive" alt="gpu-memory-model.png">
+</p>
+</figure>
+<ul class="org-ul">
+<li>All threads from a block can access the same variable in that
+block shared memory
+</li>
+<li>Threads from two different blocks can access the same variable in
+global memory
+</li>
+<li>Threads from different blocks have their own copy of local
+variables in local memory
+</li>
+<li>Threads from the same block have their own copy of local variables
+in local memory
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-6" class="outline-4">
+<h4 id="sec-1-2-6"><span class="section-number-4">1.2.6</span> barrier</h4>
+<div class="outline-text-4" id="text-1-2-6">
+<p>
+point in program where threads stop and wait. when all threads have
+reached the barrier, they can proceed.
+<img src="./images/synchronized.png" class="img-responsive" alt="synchronized.png">
+</p>
+</div>
+</div>
+<div id="outline-container-sec-1-2-7" class="outline-4">
+<h4 id="sec-1-2-7"><span class="section-number-4">1.2.7</span> High-level strategies</h4>
+<div class="outline-text-4" id="text-1-2-7">
+<ol class="org-ol">
+<li>Maximize arithmetic intensity
+</li>
+</ol>
+<p>
+\[\frac{Math}{Memory}\]
+</p>
+<ul class="org-ul">
+<li>maximize compute ops per thread
+</li>
+<li>minimize time spent on memory per thread
+<ul class="org-ul">
+<li>move frequently-accessed data to fast memory
+local &gt; shared &gt;&gt; global &gt;&gt; cpu memory
+</li>
+</ul>
+</li>
+</ul>
+<p>
+coalesce memeory
+<img src="./images/coalesce.png" class="img-responsive" alt="coalesce.png">
+</p>
+<ol class="org-ol">
+<li>avoid thread divergence
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-8" class="outline-4">
+<h4 id="sec-1-2-8"><span class="section-number-4">1.2.8</span> <code>cudaMalloc</code></h4>
+<div class="outline-text-4" id="text-1-2-8">
+<div class="org-src-container">
+
+<pre class="src src-c++"><span style="color: #b58900;">float</span> *<span style="color: #268bd2;">device_data</span>=<span style="color: #268bd2; font-weight: bold;">NULL</span>;  
+<span style="color: #b58900;">size_t</span> <span style="color: #268bd2;">size</span> = 1024*<span style="color: #859900;">sizeof</span>(<span style="color: #b58900;">float</span>);  
+cudaMalloc((<span style="color: #b58900;">void</span>**)&amp;device_data, size);
+</pre>
+</div>
+<p>
+而 <code>device_data</code> 这个指针是存储在主存上的。之所以取 <code>device_data</code> 的地
+址，是为了将 <code>cudaMalloc</code> 在显存上获得的数组首地址赋值给 <code>device_data</code>
+。在函数中为形参赋值是不会在实参中繁盛变化的，但是指针传递的是地址 
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-9" class="outline-4">
+<h4 id="sec-1-2-9"><span class="section-number-4">1.2.9</span> <span class="label label-primary TODO">TODO</span> <a href="file:///Users/zhangli/Documents/Library.papers3/Files/1E/1ED49076-5D40-4E5F-B232-918B17EA1596.pdf">What Every Programmer Should Know About Memory</a></h4>
+<div class="outline-text-4" id="text-1-2-9">
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Next Week</h2>
+</div>
+</div><div class="col-md-3"><nav id="table-of-contents">
+<div id="text-table-of-contents" class="bs-docs-sidebar">
+<ul class="nav">
+<li><a href="#sec-1">1. This Week</a>
+<ul class="nav">
+<li><a href="#sec-1-1">1.1. extract feature</a></li>
+<li><a href="#sec-1-2">1.2. Cuda Note</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Next Week</a></li>
+</ul>
+</div>
+</nav>
+</div></div></div>
+<footer id="postamble" class="">
+<div><p class="author">Author: 章立</p>
+<p class="date">Created: 2016-08-29 Mon 15:33</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org-mode</a> 8.3.4)</p>
+</div>
+</footer>
+</body>
+</html>
