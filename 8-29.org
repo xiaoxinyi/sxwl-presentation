@@ -215,13 +215,16 @@ reached the barrier, they can proceed.
 [[./images/synchronized.png]]
 *** High-level strategies
   * Maximize arithmetic intensity
-#+BEGIN_SRC latex
-  \frac{Math}{Memory}
-#+END_SRC
+
+\( \frac{Math}{Memory} \)
+
     - maximize compute ops per thread
     - minimize time spent on memory per thread
        + move frequently-accessed data to fast memory
+#+BEGIN_SRC example
           local > shared >> global >> cpu memory
+#+END_SRC
+
   * coalesce memeory
 
 [[./images/coalesce.png]]
