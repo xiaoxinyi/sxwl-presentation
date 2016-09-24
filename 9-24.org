@@ -1,0 +1,544 @@
+* This Week
+** what we should care about in deep learning
+*** One time setup
+**** activation functions
+***** sigmod function
+****** Saturated neurons “kill” the gradients
+****** Sigmoid outputs are not zero-centered
+****** Consider what happens when the input to a neuron is always positive? What can we say about the gradients on w? Always all positive or all negative :(
+ (this is also why you want zero-mean data!)
+****** exp() is a bit compute expensive
+***** tanh(x)
+****** Squashes numbers to range [-1,1]
+****** zero centered (nice)
+****** still kills gradients when saturated :(
+***** ReLU (Rectified Linear Unit)
+****** Does not saturate (in +region)
+****** Converges much faster than
+****** sigmoid/tanh in practice (e.g. 6x)
+****** Very computationally efficient
+****** Not zero-centered output
+****** hint: what is the gradient when x < 0?
+****** people like to initialize ReLU neurons with slightly positive biases (e.g. 0.01)
+***** Leaky ReLU  f(x) = max(0.01x, x)
+****** Does not saturate 
+****** Computationally efficient Converges much faster than sigmoid/tanh in practice! (e.g. 6x)
+****** will not “die”.
+***** Parametric Rectifier (PReLU) f(x) = max(\alpha*x, x)
+****** backprop into \alpha (parameter)
+***** Exponential Linear Units (ELU)
+****** \[ \begin{cases} x \ \ if\ x > 0 \\ \alpha (exp(x) - 1) \ \ if\ x \leq 0 \end{cases} \]
+****** All benefits of ReLU
+****** Does not die
+****** Closer to zero mean outputs
+****** Computation requires exp()
+***** Maxout “Neuron” 
+****** \[ max(w_1^{T}x + b_1, w_2^{T}x + b_2) \]
+****** Does not have the basic form of dot product -> nonlinearity
+****** Generalizes ReLU and Leaky ReLU
+****** Linear Regime! Does not saturate! Does not die!
+****** Problem: doubles the number of parameters/neuron :(
+**** preprocessing
+***** preprocess image data
+****** reference
+******* [[https://github.com/torch/tutorials/blob/master/2_supervised/1_data.lua][tutorial]]
+****** load data
+       #+BEGIN_SRC lua
+         ----------------------------------------------------------------------
+         print '==> loading dataset'
+
+         -- We load the dataset from disk, and re-arrange it to be compatible
+         -- with Torch's representation. Matlab uses a column-major representation,
+         -- Torch is row-major, so we just have to transpose the data.
+
+         -- Note: the data, in X, is 4-d: the 1st dim indexes the samples, the 2nd
+         -- dim indexes the color channels (RGB), and the last two dims index the
+         -- height and width of the samples.
+
+         loaded = torch.load(train_file,'ascii')
+         trainData = {
+            data = loaded.X:transpose(3,4),
+            labels = loaded.y[1],
+            size = function() return trsize end
+         }
+
+       #+END_SRC
+****** image size scale
+       #+BEGIN_SRC lua 
+         require 'image'
+         image_name = paths.basename('Goldfish3.jpg')
+         print(image_name)
+         im = image.load(image_name)
+         im = image.scale(im, 224, 224):double()
+         itorch.image(im)
+         im = torch.reshape(im, 1, 3, 224, 224)
+         itorch.image(im)
+         print(im:size())
+       #+END_SRC
+****** rescale and normalize the image globally
+       #+BEGIN_SRC lua
+         -- Rescales and normalizes the image
+         function preprocess(im, img_mean)
+           -- rescale the image
+           local im3 = image.scale(im,224,224,'bilinear')
+           -- subtract imagenet mean and divide by std
+           for i=1,3 do im3[i]:add(-img_mean.mean[i]):div(img_mean.std[i]) end
+           return im3
+         end
+
+         I = preprocess(im, net.transform):float()
+         itorch.image(I)
+       #+END_SRC
+****** colorspace RGB -> YUV
+       #+BEGIN_SRC lua
+         print '==> preprocessing data: colorspace RGB -> YUV'
+         for i = 1,trainData:size() do
+            trainData.data[i] = image.rgb2yuv(trainData.data[i])
+         end
+         for i = 1,testData:size() do
+            testData.data[i] = image.rgb2yuv(testData.data[i])
+         end
+       #+END_SRC
+****** normalize all three channel locally
+       #+BEGIN_SRC lua
+         -- Local normalization
+         print '==> preprocessing data: normalize all three channels locally'
+
+         -- Define the normalization neighborhood:
+         neighborhood = image.gaussian1D(13)
+
+         -- Define our local normalization operator (It is an actual nn module, 
+         -- which could be inserted into a trainable model):
+         normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
+
+         -- Normalize all channels locally:
+         for c in ipairs(channels) do
+            for i = 1,trainData:size() do
+               trainData.data[{ i,{c},{},{} }] = normalization:forward(trainData.data[{ i,{c},{},{} }])
+            end
+            for i = 1,testData:size() do
+               testData.data[{ i,{c},{},{} }] = normalization:forward(testData.data[{ i,{c},{},{} }])
+            end
+         end
+       #+END_SRC
+****** verify statistics
+       #+BEGIN_SRC lua
+         print '==> verify statistics'
+
+         -- It's always good practice to verify that data is properly
+         -- normalized.
+
+         for i,channel in ipairs(channels) do
+            trainMean = trainData.data[{ {},i }]:mean()
+            trainStd = trainData.data[{ {},i }]:std()
+
+            testMean = testData.data[{ {},i }]:mean()
+            testStd = testData.data[{ {},i }]:std()
+
+            print('training data, '..channel..'-channel, mean: ' .. trainMean)
+            print('training data, '..channel..'-channel, standard deviation: ' .. trainStd)
+
+            print('test data, '..channel..'-channel, mean: ' .. testMean)
+            print('test data, '..channel..'-channel, standard deviation: ' .. testStd)
+         end
+       #+END_SRC
+****** visualizing data
+       #+BEGIN_SRC lua
+         print '==> visualizing data'
+
+         -- Visualization is quite easy, using itorch.image().
+
+         if opt.visualize then
+            if itorch then
+            first256Samples_y = trainData.data[{ {1,256},1 }]
+            first256Samples_u = trainData.data[{ {1,256},2 }]
+            first256Samples_v = trainData.data[{ {1,256},3 }]
+            itorch.image(first256Samples_y)
+            itorch.image(first256Samples_u)
+            itorch.image(first256Samples_v)
+            else
+               print("For visualization, run this script in an itorch notebook")
+            end
+         end
+       #+END_SRC
+****** one method used for =cifar= dataset [[https://github.com/szagoruyko/cifar.torch/blob/master/provider.lua][(code)]] 
+       - RGB -> YUV
+       - normalize Y channel locally
+       - normalize U, V channel globally
+         #+BEGIN_SRC lua
+            -- preprocess trainSet
+             local normalization = nn.SpatialContrastiveNormalization(1, image.gaussian1D(7))
+             for i = 1,trainData:size() do
+                xlua.progress(i, trainData:size())
+                -- rgb -> yuv
+                local rgb = trainData.data[i]
+                local yuv = image.rgb2yuv(rgb)
+                -- normalize y locally:
+                yuv[1] = normalization(yuv[{{1}}])
+                trainData.data[i] = yuv
+             end
+             -- normalize u globally:
+             local mean_u = trainData.data:select(2,2):mean()
+             local std_u = trainData.data:select(2,2):std()
+             trainData.data:select(2,2):add(-mean_u)
+             trainData.data:select(2,2):div(std_u)
+             -- normalize v globally:
+             local mean_v = trainData.data:select(2,3):mean()
+             local std_v = trainData.data:select(2,3):std()
+             trainData.data:select(2,3):add(-mean_v)
+             trainData.data:select(2,3):div(std_v)
+         #+END_SRC
+****** tools
+******* [[http://www.imagemagick.org/script/convert.php][convert tool]]
+****** weight initialization
+******* Small random numbers (gaussian with zero mean and 1e-2 standard deviation)
+        #+BEGIN_SRC python
+          W = 0.01 * np.random.randn(D, H)
+        #+END_SRC
+******** Works ~okay for small networks, but can lead to non-homogeneous distributions of activations across the layers of a network.
+******** 10-layer net with 500 neurons on each layer, using tanh non-linearities
+********* All activations become zero!
+********* Almost all neurons completely saturated, either -1 and 1. Gradients will be all zero.
+******* Xavier initialization [Glorot et al., 2010]
+        #+BEGIN_SRC python
+          W = np.random.randn(fan_in, fan_out) / np.sqrt(fan_in)
+        #+END_SRC
+******** Reasonable initialization
+******** but when using the ReLU nonlinearity it breaks.
+******* He et al., 2015
+        #+BEGIN_SRC python
+          W = np.random.randn(fan_in, fan_out) / np.sqrt(fan_in / 2)
+        #+END_SRC
+******* Proper initialization is an active area of research
+******** Understanding the difficulty of training deep feedforward neural networks by Glorot and Bengio, 2010 
+******** Exact solutions to the nonlinear dynamics of learning in deep linear neural networks by Saxe et al, 2013
+******** Random walk initialization for training very deep feedforward networks by Sussillo and Abbott, 2014
+******** Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification by He et al., 2015
+******** Data-dependent Initializations of Convolutional Neural Networks by Krähenbühl et al., 2015
+******** All you need is a good init, Mishkin and Matas, 2015
+****** layer tricks
+******* Batch Normalization
+******** consider a batch of activations at some layer. To make each dimension unit gaussian, apply:
+         \[ \hat{x}_{(k)}} = \frac{x^{(k)} - E[x^{(k)}]}{\sqrt{Var[x^{(k)}]}} \]
+******** this is a vanilla differentiable function...
+******** compute the empirical mean and variance independently for each dimension.
+******** Normalize
+******** Usually inserted after Fully Connected / (or Convolutional) layers, and before nonlinearity.
+******** Problem: do we necessarily want a unit gaussian input to a tanh layer?
+******** advantages
+********* improves gradient flow through the network
+********* Allows higher learning rates
+********* Reduces the strong dependence on initialization
+********* Acts as a form of regularization in a funny way, and slightly reduces the need for dropout, maybe
+******** algorithm
+         \[ y_i = BN_{r, \beta}(x_i) \] 
+         \[ \mu_{}_{}_{}_\Beta \leftarrow \frac{1}{m}\sum_{i-1}^m x_i \]  // mini-batch mean
+         \[ \sigma_{\Beta}^{2} \leftarrow \frac{1}{m} \sum_{i=1}^{m}(x_i - \mu_{\Beta})^2 \]  // mini-batch variance
+         \[ \hat{x}_{i}  \leftarrow \frac{(x_i - \mu{}_{\Beta})^2}{\sqrt{\sigma_{\Beta}^2 + \epsilon }} \]  // normalize
+         \[ y_i \leftarrow \gamma\hat{x}_i + \beta \]  // scale and shift
+******** Note: at test time BatchNorm layer functions differently:
+         - The mean/std are not computed based on the batch. Instead, a
+           single fixed empirical mean of activations during training
+           is used.
+         - (e.g. can be estimated during training with running averages)
+****** regularization
+******* Dropout
+        - randomly set some neurons to zero in the forward pass
+          #+BEGIN_SRC python
+            p = 0.5  # probability of keeping a unit active. high = less dropout
+
+            def train_step(X):
+                """ X contains the data """
+
+                # forward pass for example 3-layer neural network
+                H1 = np.maximum(0, np.dot(W1, X) + b1)
+                U1 = np.random.rand(*H1.shape) < p  # first dropout mask
+                H1 *= U1  # drop!
+                H2 = np.maximum(0, np.dot(W2, H1) + b2)
+                U2 = np.random.rand(*H2.shape) < p  # second dropout mask
+                H2 *= U2  # drop!
+                out = np.dot(W3, H2) + b3
+
+                # backward pass: compute gradients... (not shown)
+                # perform paramter update... (not shown)
+          #+END_SRC
+******** How could this possibly be a good idea?
+         - Forces the network to have a redundant representation
+         - Dropout is training a large ensemble of models (that share parameters).
+         - Each binary mask is one model, gets trained on only ~one
+           datapoint.
+******** At test time...
+         - Ideally: want to integrate out all the noise
+         - Monte Carlo approximation: do many forward passes with
+           different dropout masks, average all predictioins
+         - Can in fact do this with a single forward pass! Leave all
+           input neurons turned on (no dropout).
+           + during test : a = W0*x + W1*y
+           + during train:
+             E[a] = 1/4*(W0*0 + W1*0 + W0*0 + W1*y + W0*x
+             + W1*0 + W0*x + W1*y) = 1/4*(2W0*x + 2W1*y) = 1/2(W0*x +
+               W1*y)
+           + with p = 0.5, using all inputs in the forward pass would
+             inflate the activations by 2x from what the network was
+             "used to" during training! => Have to compensate by
+             scaling the activations back down by 1/2.
+           + At test time all neurons are active always => output at
+             test time = expected output at training time
+             #+BEGIN_SRC python
+               def predict(X):
+                   # ensembled forward pass
+                   H1 = np.maximum(0, np.dot(W1, X) + b1) * p  # NOTE: scale the activations
+                   H2 = np.maximum(0, np.dot(W2, H1) + b2) * p  # NOTE: scale the activations
+                   out = np.dot(W3, H2) + b3
+             #+END_SRC
+            
+             #+BEGIN_SRC python
+               p = 0.5  # probability of keeping a unit active. higher = less dropout
+
+               def train_step(X):
+                   # forward pass for example 3-layer neural network
+                   H1 = np.maximum(0, np.dot(W1, X) + b1)
+                   U1 = (np.random.rand(*H1.shape) < p) / p  # first dropout mask. Notice /p!
+                   H1 *= U1  # drop!
+                   H2 = np.maximum(0, np.dot(W22, H1) + b2)
+                   U2 = (np.random.rand(*H2.shape) < p) / p  # second dropout mask. Notice /p!
+                   H2 *= U2  # drop!
+                   out = np.dot(W3, H2) + b3
+
+
+
+               def predict(X):
+                   # ensembled forward pass
+                   H1 = np.maximum(0, np.dot(W1, X) + b1)  # no scaling necessary
+                   H2 = np.maximum(0, np.dot(W2, H1) + b2)
+                   out = np.dot(W3, H2) + b3
+             #+END_SRC
+
+****** gradient checking
+*** Training dynamics
+**** babysitting the learning process
+***** Double check that the loss is reasonable
+      #+BEGIN_SRC python
+        import numpy as np
+
+
+        def init_two_layer_model(input_size, hidden_size, output_size):
+            # initialize a model
+            model = {}
+            model['W1'] = 0.0001 * np.random.randn(input_size, hidden_size)
+            model['b1'] = np.zeros(hidden_size)
+            model['W2'] = 0.0001 * np.random.randn(hidden_size, output_size)
+            model['b2'] = np.zeros(output_size)
+            return model
+
+
+        def two_layer_net(X_train, model, y_train, r):
+            ''' returns the loss and the gradient for all parameters '''
+            pass
+
+
+        model = init_two_layer_model(32*32*3, 50, 10)  # input_size, hidden_size, number of classes
+        loss, grad = two_layer_net(X_train, model, y_train, 0.0)  # diable regularization
+
+        # loss 2.3026121617 loss ~2.3 'correct' for 10 classes
+
+
+        model = init_two_layer_model(32*32*3, 50, 10)  # input_size, hidden_size, number of classes
+        loss, grad = two_layer_net(X_train, model, y_train, 1e3)  # crank up regularization
+
+        # 3.06859716482 loss went up, good (sanity check)
+
+      #+END_SRC
+***** Make sure that you can overfit very small portion of the training data
+      #+BEGIN_SRC python
+        model = init_two_lay_model(32*32*3, 50, 10)
+        trainer = ClassifierTrainer()
+        x_tiny = x_train[:20]  # take 20 examples
+        y_tiny = y_train[:20]
+        best_model, stats = trainer.train(x_tiny, y_tiny,
+                                          model, two_layer_net,
+                                          update='sgd', learning_rate_decay=1,
+                                          sample_batches=False,
+                                          learning_rate=1e-3, verbose=True)
+      #+END_SRC
+      - take the first 20 examples from CIFAR-10
+      - turn off regularization (reg = 0.0)
+      - use simple vanilla 'sgd'
+      - very small loss, train accuracy 1.00, nice!
+***** I like to start with small regularization and find learning rate that makes the loss go down.
+      #+BEGIN_SRC python
+        model = init_two_lay_model(32*32*3, 50, 10)
+        trainer = ClassifierTrainer()
+        x_tiny = x_train[:20]  # take 20 examples
+        y_tiny = y_train[:20]
+        best_model, stats = trainer.train(x_tiny, y_tiny,
+                                          model, two_layer_net,
+                                          update='sgd', learning_rate_decay=1,
+                                          sample_batches=False,
+                                          learning_rate=1e-6, verbose=True)
+
+        # Loss barely changing: Learning rate is probably too low
+        # Notice train/val accuracy goes up
+
+      #+END_SRC
+***** loss not going down: learning rate too low
+***** loss exploding: learning rate too high
+***** cost: NaN almost always means high learning rate...
+***** Rough range for learning rate we should be cross-validating is somewhere [1e-3 ... 1e-5]
+**** parameter updates
+***** Mini-batch SGD
+****** loop:
+       1. Sample a batch of data
+       2. Forward prop it through the graph, get loss
+       3. Backprop to calculate the gradients
+       4. Update the parameters using the gradient
+          #+BEGIN_SRC python
+            while True:
+                data_batch = dataset.sample_data_batch()
+                loss = network.forward(data_batch)
+                dx = network.backward()
+                x += - learning_rate * dx
+          #+END_SRC
+***** Momentum update
+      #+BEGIN_SRC python
+        # Gradient descent update
+        x += - learning_rate * dx
+
+        # Momentum update
+        v = mu * v - learning_rate * dx  # integrate velocity
+        x += v  # integrate position
+
+      #+END_SRC
+      - Physical intepretation as ball rolling down the loss
+        function + friction (\mu coefficient)
+      - \mu = usually ~ 0.5, 0.9, or 0.99 (sometimes anneled over time,
+        e.g. from 0.5 -> 0.99)
+      - Allows a velocity to build up along shallow directions
+      - Velocity becomes damped in steep direction due to quickly
+        changing sign
+***** Nesterov Momentum update
+      v_t = \mu v_{t-1} - \epsilon \nabla f(\theta_{t-1} + \mu v_{t-1})
+
+      \theta_t = \theta_{t-1} + v_t 
+       
+      \theta_{t-1} + \mu v_{t-1} Slightly inconvenient usually we have : \theta_{t-1}
+      \nabla f(\theta_{t-1})  
+      - variable transform and rearranging saves the day: \phi_{t-1} = \theta_{t-1} + \mu v_{t-1}
+      - replace all \theta  with \phi , rearrange and obtain:
+
+        v_t = \mu v_{t-1} - \epsilon \nabla f(\phi_{t-1})
+
+      \phi_t = \phi_{t-1} - \mu v_{t-1} + (1 + \mu)v_t 
+      #+BEGIN_SRC python
+        # Nesterov momentum update rewrite
+        v_prev = v
+        v = mu * v - learning_rate * dx
+        x += -mu * v_prev + (1 + mu) * v
+      #+END_SRC
+***** AdaGrad update
+      - Added element-wise scaling of the gradient based on the
+        historical sum of squares in each dimension
+        #+BEGIN_SRC python
+          # Adagrad update
+
+          cache += dx**2
+          x += - learning_rate * dx / (np.sqrt(cache) + 1e-7)
+        #+END_SRC
+***** RMSProp update
+      #+BEGIN_SRC python
+        # Adagrad update
+        cache += decay_rate * cache + (1 - decay_rate) * dx**2
+        x += - learning_rate * dx / (np.sqrt(cache) + 1e-7)
+      #+END_SRC
+***** Adam update
+      #+BEGIN_SRC python
+        # Adam
+        m = beta1*m + (1 - beta1)*dx  # update first moment momentum
+        v = beta2*v + (1 - beta2)*(dx**2)  # update second moment RMSProp-like
+
+        x += - learning_rate * m / (np.sqrt(v) + 1e-7)
+      #+END_SRC
+
+      #+BEGIN_SRC python
+        # Adam
+        m, v =  # ... initialize caches to zeros
+        for t in xrange(1, big_number):
+            dx =  # ... evaluate gradient
+            m = beta1 * m + (1 - beta1) * dx  # update first moment
+            v = beta2 * v + (1 - beta2) * (dx**2)  # update second moment
+            mb = m / (1 - beta1**t)  # correct bias
+            vb = v / (1 - beta2**t)  # correct bias
+            x += - learning_rate * mb / (np.sqrt(vb) + 1e-7)
+      #+END_SRC
+      - The biaas correction compensates for the fact that m, v are
+        initialize at zero and need some time to "warm up".
+      - bias correction only relevant in first few iteration when t
+        is small
+***** learning rate as a hyperparameter => learning rate decay over time! 
+      - step decay: e.g. decay learning rate by half every few epochs
+      - exponential decay: \[ \alpha = \alpha_0 e^{-kt }\]
+      - 1/t decay: \[ \alpha = \alpha_0 / (1 + kt) \]
+***** Adam is a good default choice in most cases
+**** hyperparameter optimization
+***** network architecture
+***** learning rate, its decay schedule, update type
+***** regularization (L2/Droout strength)
+***** monitor and visualize the loss curve
+***** monitor and visualize the accuracy
+      - big gap = overfitting => increase regularization strength?
+      - no gap => increase model capacity?
+***** Track the ratio of weight updates / weight magnitudes:
+      #+BEGIN_SRC python
+        # assume parameter vector W and its gradient vector dW
+        param_scale = np.linalg.norm(W.ravel())
+        update = -learning_rate*dW  # simple SGD update
+        update_scale = np.linalg.norm(update.ravel())
+        W += update  # the actual update
+        print update_scale / param_scale  # want -1e-3
+      #+END_SRC
+      - atio between the values and updates: ~ 0.0002 / 0.02 = 0.01 (about okay)
+      - want this to be somewhere around 0.001 or so
+***** Cross-validation strategy
+****** I like to do coarse -> fine cross-validation in stages
+       - First stage: only a few epochs to get rough idea of what params work
+       - Second stage: longer running time, finer search ... (repeat
+         as necessary)
+         #+BEGIN_SRC python
+           max_count = 100
+
+           # coarse search
+           for count in xrange(max_count):
+               # note it's best to optimize in log space!
+               reg = 10**uniform(-5, 5)
+               lr = 10**uniform(-3, -6)
+
+           # fine search
+           for count in xrange(max_count):
+               reg = 10**uniform(-4, 0)
+               lr = 10**uniform(-3, -4)
+         #+END_SRC
+
+*** Evaluation
+**** model ensembles
+     1. Train multiple independent models
+     2. At test time average their results (Enjoy 2% extra performace)
+     3. Fun Tips/Tricks:
+        - can also get a small boost from averaging multiple model
+          checkpoints of a single model.
+        - keep track of (and use at test time) a running average
+          parameter vector:
+          #+BEGIN_SRC python
+            while True:
+                data_batch = dataset.sample_data_batch()
+                loss = network.forward(data_batch)
+                dx = network.backward()
+                x += - learning_rate * dx
+                x_test = 0.9995*x_test + 0.005*x  # use for test set
+          #+END_SRC
+** Torch framework
+** Interview (iOS, Android)
+* Next Week
+** logo binary classification
+   SCHEDULED: <2016-09-24 Sat>
+** TODO [[https://github.com/facebook/fb.resnet.torch/tree/master/pretrained][fb.resnet.torch]]
+    SCHEDULED: <2016-09-24 Sat>
