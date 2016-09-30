@@ -1,0 +1,14 @@
+* This Week
+** TODO resnet torch 
+   SCHEDULED: <2016-09-19 Mon>
+*** [[https://github.com/szagoruyko/wide-residual-networks][resnet git repository Sergey Zagoruyko]]
+*** TODO [[https://github.com/facebook/fb.resnet.torch/tree/master/pretrained][fb.resnet.torch]]
+    SCHEDULED: <2016-09-11 Sun>
+** [[https://github.com/szagoruyko/cifar.torch][cifar.torch]]
+**** [[https://github.com/szagoruyko/cifar.torch][git repository]]
+**** [[http://torch.ch/blog/2015/07/30/cifar.html][blog]]
+** feature extraction with torch
+   - pretrained model 
+     + =vgg16=
+     + =bvlc_reference_caffenet=
+** prepare logo dataset
